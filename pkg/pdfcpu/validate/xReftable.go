@@ -1347,11 +1347,14 @@ func validateDSS(xRefTable *model.XRefTable, rootDict types.Dict, required bool,
 	return nil
 }
 
-func validateAF(xRefTable *model.XRefTable, rootDict types.Dict, required bool, sinceVersion model.Version) error {
+func validateAF(xRefTable *model.XRefTable, rootDict types.Dict, required bool, sinceVersion model.Version) (err error) {
 	// => 14.13 Associated Files
 
 	rootObjNr := validationRootObjectNumber(xRefTable)
 	afObjNr := validationEntryObjectNumber(rootObjNr, rootDict, "AF")
+	defer func() {
+		err = model.WithValidationErrorObject(err, afObjNr)
+	}()
 	a, err := validateArrayEntry(
 		xRefTable, rootDict, rootObjNr, "rootDict", "AF", required, sinceVersion, nil,
 	)
@@ -1359,7 +1362,18 @@ func validateAF(xRefTable *model.XRefTable, rootDict types.Dict, required bool, 
 		return err
 	}
 
-	return model.WithValidationErrorObject(errors.New("PDF 2.0 associated files not supported"), afObjNr)
+	for i, o := range a {
+		o, err = validateFileSpecification(xRefTable, o)
+		if err != nil {
+			return err
+		}
+
+		if _, ok := o.(types.Dict); !ok {
+			return errors.Errorf("validateAF: dict=rootDict entry=AF invalid type at index %d", i)
+		}
+	}
+
+	return nil
 }
 
 func validateDPartRoot(xRefTable *model.XRefTable, rootDict types.Dict, required bool, sinceVersion model.Version) error {

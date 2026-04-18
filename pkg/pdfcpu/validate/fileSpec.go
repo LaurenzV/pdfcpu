@@ -447,11 +447,13 @@ func validateFileSpecDictPart2(xRefTable *model.XRefTable, d types.Dict, ownerOb
 		return err
 	}
 
-	// AFRelationship, optional, associated file semantics, since V2.0
+	// AFRelationship, optional, associated file semantics.
+	// pdfcpu's validator only tracks the base PDF version and has no PDF/A profile support.
+	// Accept this starting with PDF 1.7 so PDF/A-3 associated files do not false-positive.
 	validateAFRelationship := func(s string) bool {
 		return types.MemberOf(s, []string{"Source", "Data", "Alternative", "Supplement", "EncryptedPayload", "FormData", "Schema", "Unspecified"})
 	}
-	sinceVersion = model.V20
+	sinceVersion = model.V17
 	if xRefTable.ValidationMode == model.ValidationRelaxed {
 		sinceVersion = model.V14
 	}
