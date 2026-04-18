@@ -79,7 +79,7 @@ func TestParseDateTime(t *testing.T) {
 	doParseDateTimeOK(s, t)
 
 	s = "D:20170430155901Z"
-	doParseDateTimeRelaxedOK(s, t)
+	doParseDateTimeOK(s, t)
 
 	s = "D:20170430155901"
 	doParseDateTimeOK(s, t)
@@ -161,6 +161,10 @@ func TestParseDateTime(t *testing.T) {
 
 	s = "\357\273\277D:20160404061414+65'53'"
 	doParseDateTimeRelaxedOK(s, t)
+}
+
+func TestParseDateTimeStrictZulu(t *testing.T) {
+	doParseDateTimeOK("D:20010101000000Z", t)
 }
 
 // TestWriteDateTime verifies write date time.
