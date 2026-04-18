@@ -155,17 +155,13 @@ func validateFontDescriptorFontName(xRefTable *model.XRefTable, d types.Dict, di
 }
 
 func validateFontDescriptorFontFamily(xRefTable *model.XRefTable, d types.Dict, dictName string) error {
-	required := true
-	if xRefTable.ValidationMode == model.ValidationRelaxed {
-		required = false
-	}
 	sinceVersion := model.V15
 	if xRefTable.ValidationMode == model.ValidationRelaxed {
 		sinceVersion = model.V13
 	}
-	_, err := validateNameEntry(xRefTable, d, dictName, "FontFamily", required, sinceVersion, nil)
+	_, err := validateNameEntry(xRefTable, d, dictName, "FontFamily", OPTIONAL, sinceVersion, nil)
 	if err != nil {
-		if _, err = validateStringEntry(xRefTable, d, dictName, "FontFamily", required, sinceVersion, nil); err != nil {
+		if _, err = validateStringEntry(xRefTable, d, dictName, "FontFamily", OPTIONAL, sinceVersion, nil); err != nil {
 			if xRefTable.ValidationMode == model.ValidationRelaxed {
 				model.ShowDigestedSpecViolationError(xRefTable, err)
 				return nil
