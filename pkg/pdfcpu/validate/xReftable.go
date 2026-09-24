@@ -1369,7 +1369,7 @@ func validateAF(xRefTable *model.XRefTable, rootDict types.Dict, required bool, 
 		}
 
 		if _, ok := o.(types.Dict); !ok {
-			return errors.Errorf("validateAF: dict=rootDict entry=AF invalid type at index %d", i)
+			return fmt.Errorf("validateAF: dict=rootDict entry=AF invalid type at index %d", i)
 		}
 	}
 
